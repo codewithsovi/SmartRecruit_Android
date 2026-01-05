@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">SmartRecruit</string>
+    <string name="welcome">Welcome!</string>
+    <string name="welcome_tagline">Right Selection,\nFast Decision.</string>
+    <string name="jumlah_kriteria">Jumlah Kriteria</string>
+    <string name="jumlah_jabatan">Jumlah Jabatan</string>
+    <string name="jumlah_kandidat">Jumlah Kandidat</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_report">Laporan</string>
+    <string name="nav_profile">Profil</string>
 </resources>

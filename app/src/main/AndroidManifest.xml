@@ -12,8 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartRecruit">
         <activity
+            android:name=".DataKandidatActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".DaftarKandidatActivity"
+            android:exported="false"
+            android:parentActivityName=".DataKandidatActivity"/>
+        <activity
+            android:name=".DataJabatanActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,8 +33,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="false" />
     </application>
+
 </manifest>
