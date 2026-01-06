@@ -18,7 +18,7 @@ public class JabatanAdapter extends RecyclerView.Adapter<JabatanAdapter.JabatanV
     private OnItemClickListener itemClickListener;
     private OnDeleteClickListener deleteClickListener;
 
-    // ===== INTERFACE KLIK ITEM =====
+    // ===== INTERFACE KLIK ITEM (UNTUK EDIT) =====
     public interface OnItemClickListener {
         void onItemClick(Jabatan jabatan, int position);
     }
@@ -37,20 +37,21 @@ public class JabatanAdapter extends RecyclerView.Adapter<JabatanAdapter.JabatanV
         this.deleteClickListener = listener;
     }
 
-    // ===== CONSTRUCTOR TANPA PARAMETER (WAJIB ADA) =====
+    // ===== CONSTRUCTOR =====
     public JabatanAdapter() {
         this.listJabatan = new ArrayList<>();
     }
 
-    // ===== SET DATA DARI LUAR =====
+    // ===== METHOD UNTUK MEMPERBARUI DATA =====
     public void setListJabatan(List<Jabatan> listJabatan) {
         this.listJabatan = listJabatan;
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // Memberitahu RecyclerView bahwa data berubah
     }
 
     @NonNull
     @Override
     public JabatanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Membuat View baru dari layout item_jabatan.xml
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_jabatan, parent, false);
         return new JabatanViewHolder(view);
@@ -58,51 +59,47 @@ public class JabatanAdapter extends RecyclerView.Adapter<JabatanAdapter.JabatanV
 
     @Override
     public void onBindViewHolder(@NonNull JabatanViewHolder holder, int position) {
+        // Mengambil data Jabatan berdasarkan posisi
         Jabatan jabatan = listJabatan.get(position);
+
+        // --- TAMBAHKAN LOGIKA DI SINI ---
+
+        // 1. Set data ke View (nama jabatan)
         holder.tvNamaJabatan.setText(jabatan.getNama());
+
+        // 2. Atur aksi untuk klik pada item (untuk edit)
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(jabatan, position);
+            }
+        });
+
+        // 3. Atur aksi untuk klik pada tombol hapus
+        holder.btnDelete.setOnClickListener(v -> {
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(jabatan, position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
+        // Mengembalikan jumlah item, atau 0 jika list null
         return listJabatan == null ? 0 : listJabatan.size();
     }
 
-    class JabatanViewHolder extends RecyclerView.ViewHolder {
+    // ===== VIEW HOLDER: Menyimpan referensi View =====
+    // Class ini menjadi lebih bersih karena hanya bertugas menyimpan View
+    public static class JabatanViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvNamaJabatan;
         Button btnDelete;
 
         public JabatanViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            // Inisialisasi View dari layout
             tvNamaJabatan = itemView.findViewById(R.id.tvNamaJabatan);
             btnDelete = itemView.findViewById(R.id.btnDelete);
-
-            // Klik item (edit / buka detail)
-            itemView.setOnClickListener(v -> {
-                if (itemClickListener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        itemClickListener.onItemClick(
-                                listJabatan.get(position),
-                                position
-                        );
-                    }
-                }
-            });
-
-            // Klik hapus
-            btnDelete.setOnClickListener(v -> {
-                if (deleteClickListener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        deleteClickListener.onDeleteClick(
-                                listJabatan.get(position),
-                                position
-                        );
-                    }
-                }
-            });
         }
     }
 }

@@ -98,12 +98,14 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/tvJumlahKriteria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5"
+                    android:text="0"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -130,12 +132,14 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/tvJumlahJabatan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10"
+                    android:text="0"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -162,12 +166,14 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/tvJumlahKandidat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5"
+                    android:text="0"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -194,12 +200,14 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/tvProsesSeleksi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="12"
+                    android:text="0"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
+
 
                 <TextView
                     android:layout_width="wrap_content"
