@@ -1,6 +1,7 @@
 package com.example.smartrecruit;
 
 import android.view.*;
+import android.widget.ImageButton; // Tambahkan import ini
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,8 +47,19 @@ public class KandidatAdapter extends RecyclerView.Adapter<KandidatAdapter.ViewHo
                 + k.getTesKesehatan() + k.getTesKeterampilan()) / 4;
         h.total.setText(String.valueOf(total));
 
-        h.itemView.setOnClickListener(v -> listener.onEdit(k));
-        h.itemView.setOnLongClickListener(v -> { listener.onDelete(k); return true; });
+        // Aksi untuk edit (klik pada item)
+        h.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEdit(k);
+            }
+        });
+
+        // --- PERUBAHAN: Aksi untuk hapus (klik pada tombol hapus) ---
+        h.btnDelete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDelete(k);
+            }
+        });
     }
 
     @Override
@@ -55,6 +67,7 @@ public class KandidatAdapter extends RecyclerView.Adapter<KandidatAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView nama, tulis, wawancara, kesehatan, keterampilan, total;
+        ImageButton btnDelete; // Tambahkan ini
 
         ViewHolder(View v) {
             super(v);
@@ -64,6 +77,7 @@ public class KandidatAdapter extends RecyclerView.Adapter<KandidatAdapter.ViewHo
             kesehatan = v.findViewById(R.id.tvTesKesehatan);
             keterampilan = v.findViewById(R.id.tvTesKeterampilan);
             total = v.findViewById(R.id.tvTotalScore);
+            btnDelete = v.findViewById(R.id.btnDelete); // Dan ini
         }
     }
 }

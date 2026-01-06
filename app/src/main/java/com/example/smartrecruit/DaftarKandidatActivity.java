@@ -3,6 +3,7 @@ package com.example.smartrecruit;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log; // Tambahkan import Log untuk debugging
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,92 +37,109 @@ public class DaftarKandidatActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 
-        // --- Aksi untuk Floating Action Button (TAMBAH Kandidat) ---
-        fab.setOnClickListener(v -> {
-            // ... (kode untuk dialog tambah tidak berubah) ...
-            View dialogView = getLayoutInflater().inflate(R.layout.dialog_form_kandidat, null);
-            EditText etNama = dialogView.findViewById(R.id.etNamaKandidat);
-            EditText etTulis = dialogView.findViewById(R.id.etTesTulis);
-            EditText etWawancara = dialogView.findViewById(R.id.etTesWawancara);
-            EditText etKesehatan = dialogView.findViewById(R.id.etTesKesehatan);
-            EditText etKeterampilan = dialogView.findViewById(R.id.etTesKeterampilan);
+        fab.setOnClickListener(v -> showAddDialog());
+        setupAdapterListener();
+        setupBottomNavigation();
+        loadData();
+    }
 
-            new AlertDialog.Builder(DaftarKandidatActivity.this)
-                    .setTitle("Tambah Kandidat")
-                    .setView(dialogView)
-                    .setPositiveButton("Simpan", (dialog, which) -> {
-                        String nama = etNama.getText().toString().trim();
-                        if (nama.isEmpty()) {
-                            Toast.makeText(DaftarKandidatActivity.this, "Nama tidak boleh kosong", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        int id = repository.getKandidatList().size() + 1;
-                        Kandidat newKandidat = new Kandidat(
-                                id, nama, selectedJabatan.getId(),
-                                getIntValue(etTulis), getIntValue(etWawancara),
-                                getIntValue(etKesehatan), getIntValue(etKeterampilan)
-                        );
-                        repository.addKandidat(newKandidat);
-
-                        loadData();
-                        Toast.makeText(DaftarKandidatActivity.this, "Kandidat berhasil ditambahkan", Toast.LENGTH_SHORT).show();
-                    })
-                    .setNegativeButton("Batal", null)
-                    .show();
-        });
-
-        // --- Aksi untuk Adapter (EDIT dan HAPUS Kandidat) ---
+    private void setupAdapterListener() {
         adapter.setOnActionListener(new KandidatAdapter.OnActionListener() {
             @Override
             public void onEdit(Kandidat k) {
-                // ... (kode untuk dialog edit tidak berubah) ...
-                View dialogView = getLayoutInflater().inflate(R.layout.dialog_form_kandidat, null);
-                EditText etNama = dialogView.findViewById(R.id.etNamaKandidat);
-                EditText etTulis = dialogView.findViewById(R.id.etTesTulis);
-                EditText etWawancara = dialogView.findViewById(R.id.etTesWawancara);
-                EditText etKesehatan = dialogView.findViewById(R.id.etTesKesehatan);
-                EditText etKeterampilan = dialogView.findViewById(R.id.etTesKeterampilan);
-
-                etNama.setText(k.getNama());
-                etTulis.setText(String.valueOf(k.getTesTulis()));
-                etWawancara.setText(String.valueOf(k.getTesWawancara()));
-                etKesehatan.setText(String.valueOf(k.getTesKesehatan()));
-                etKeterampilan.setText(String.valueOf(k.getTesKeterampilan()));
-
-                new AlertDialog.Builder(DaftarKandidatActivity.this)
-                        .setTitle("Edit Kandidat")
-                        .setView(dialogView)
-                        .setPositiveButton("Simpan Perubahan", (dialog, which) -> {
-                            String nama = etNama.getText().toString().trim();
-                            if (nama.isEmpty()) {
-                                Toast.makeText(DaftarKandidatActivity.this, "Nama tidak boleh kosong", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-                            k.setNama(nama);
-                            k.setTesTulis(getIntValue(etTulis));
-                            k.setTesWawancara(getIntValue(etWawancara));
-                            k.setTesKesehatan(getIntValue(etKesehatan));
-                            k.setTesKeterampilan(getIntValue(etKeterampilan));
-
-                            loadData();
-                            Toast.makeText(DaftarKandidatActivity.this, "Kandidat berhasil diperbarui", Toast.LENGTH_SHORT).show();
-                        })
-                        .setNegativeButton("Batal", null)
-                        .show();
+                showEditDialog(k);
             }
 
             @Override
             public void onDelete(Kandidat k) {
-                repository.getKandidatList().remove(k);
-                loadData();
-                Toast.makeText(DaftarKandidatActivity.this, "Kandidat berhasil dihapus", Toast.LENGTH_SHORT).show();
+                // TULISAN INI AKAN MUNCUL DI LOGCAT. GUNAKAN UNTUK DEBUG.
+                Log.d("DaftarKandidat", "onDelete dipanggil untuk: " + k.getNama());
+
+                new AlertDialog.Builder(DaftarKandidatActivity.this)
+                        .setTitle("Hapus Kandidat")
+                        .setMessage("Apakah Anda yakin ingin menghapus '" + k.getNama() + "'?")
+                        .setPositiveButton("Hapus", (dialog, which) -> {
+                            // INI ADALAH BARIS YANG PALING PENTING
+                            repository.deleteKandidat(k);
+                            loadData();
+                            Toast.makeText(DaftarKandidatActivity.this, "Kandidat berhasil dihapus", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Batal", null)
+                        .show();
             }
         });
+    }
 
-        setupBottomNavigation(); // <<<<< PERBAIKAN: TAMBAHKAN BARIS INI
-        loadData();
+    // ... method showAddDialog, showEditDialog, loadData, dll tetap sama ...
+    private void showAddDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_form_kandidat, null);
+        EditText etNama = dialogView.findViewById(R.id.etNamaKandidat);
+        EditText etTulis = dialogView.findViewById(R.id.etTesTulis);
+        EditText etWawancara = dialogView.findViewById(R.id.etTesWawancara);
+        EditText etKesehatan = dialogView.findViewById(R.id.etTesKesehatan);
+        EditText etKeterampilan = dialogView.findViewById(R.id.etTesKeterampilan);
+
+        new AlertDialog.Builder(DaftarKandidatActivity.this)
+                .setTitle("Tambah Kandidat")
+                .setView(dialogView)
+                .setPositiveButton("Simpan", (dialog, which) -> {
+                    String nama = etNama.getText().toString().trim();
+                    if (nama.isEmpty()) {
+                        Toast.makeText(DaftarKandidatActivity.this, "Nama tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    int id = (int) System.currentTimeMillis();
+                    Kandidat newKandidat = new Kandidat(
+                            id, nama, selectedJabatan.getId(),
+                            getIntValue(etTulis), getIntValue(etWawancara),
+                            getIntValue(etKesehatan), getIntValue(etKeterampilan)
+                    );
+                    repository.addKandidat(newKandidat);
+
+                    loadData();
+                    Toast.makeText(DaftarKandidatActivity.this, "Kandidat berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Batal", null)
+                .show();
+    }
+
+    private void showEditDialog(Kandidat k) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_form_kandidat, null);
+        EditText etNama = dialogView.findViewById(R.id.etNamaKandidat);
+        EditText etTulis = dialogView.findViewById(R.id.etTesTulis);
+        EditText etWawancara = dialogView.findViewById(R.id.etTesWawancara);
+        EditText etKesehatan = dialogView.findViewById(R.id.etTesKesehatan);
+        EditText etKeterampilan = dialogView.findViewById(R.id.etTesKeterampilan);
+
+        etNama.setText(k.getNama());
+        etTulis.setText(String.valueOf(k.getTesTulis()));
+        etWawancara.setText(String.valueOf(k.getTesWawancara()));
+        etKesehatan.setText(String.valueOf(k.getTesKesehatan()));
+        etKeterampilan.setText(String.valueOf(k.getTesKeterampilan()));
+
+        new AlertDialog.Builder(DaftarKandidatActivity.this)
+                .setTitle("Edit Kandidat")
+                .setView(dialogView)
+                .setPositiveButton("Simpan Perubahan", (dialog, which) -> {
+                    String nama = etNama.getText().toString().trim();
+                    if (nama.isEmpty()) {
+                        Toast.makeText(DaftarKandidatActivity.this, "Nama tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    k.setNama(nama);
+                    k.setTesTulis(getIntValue(etTulis));
+                    k.setTesWawancara(getIntValue(etWawancara));
+                    k.setTesKesehatan(getIntValue(etKesehatan));
+                    k.setTesKeterampilan(getIntValue(etKeterampilan));
+
+                    repository.updateKandidat(k);
+                    loadData();
+                    Toast.makeText(DaftarKandidatActivity.this, "Kandidat berhasil diperbarui", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Batal", null)
+                .show();
     }
 
     private void loadData() {
@@ -147,8 +165,11 @@ public class DaftarKandidatActivity extends AppCompatActivity {
                 finish();
                 return true;
             } else if (id == R.id.nav_kandidat) {
-                return true;
+                return true; // Sudah di halaman ini
             } else if (id == R.id.nav_hasil) {
+                // PERBAIKAN: Tambahkan Intent untuk pindah ke halaman Hasil
+                startActivity(new Intent(this, HasilAkhirActivity.class));
+                finish();
                 return true;
             }
             return false;

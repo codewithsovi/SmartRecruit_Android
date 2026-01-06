@@ -115,7 +115,7 @@ public class DataJabatanActivity extends AppCompatActivity implements JabatanAda
             if (id == R.id.nav_home) { startActivity(new Intent(this, MainActivity.class)); finish(); return true; }
             else if (id == R.id.nav_jabatan) { return true; }
             else if (id == R.id.nav_kandidat) { startActivity(new Intent(this, DataKandidatActivity.class)); finish(); return true; }
-            else if (id == R.id.nav_hasil) { return true; }
+            else if (id == R.id.nav_hasil) {  startActivity(new Intent(this, HasilAkhirActivity.class)); finish(); return true; }
             return false;
         });
     }

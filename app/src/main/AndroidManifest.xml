@@ -14,11 +14,11 @@
         <activity
             android:name=".DataKandidatActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".DaftarKandidatActivity"
             android:exported="false"
-            android:parentActivityName=".DataKandidatActivity"/>
+            android:parentActivityName=".DataKandidatActivity" />
         <activity
             android:name=".DataJabatanActivity"
             android:exported="false"
@@ -41,6 +41,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".HasilAkhirActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

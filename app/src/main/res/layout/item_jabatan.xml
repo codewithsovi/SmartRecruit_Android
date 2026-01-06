@@ -45,7 +45,7 @@
             android:id="@+id/btnDelete"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@drawable/bg_delete_button"
+            android:background="@drawable/delete_24"
             android:text="X"
             android:textColor="@color/white"
             android:textSize="14sp"
